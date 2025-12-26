@@ -18,10 +18,9 @@ if (!fs.existsSync(TEMP_DIR)) {
 
 const CHUNK_SIZE = 5 * 1024 * 1024; // MUST MATCH FRONTEND
 
-/*
-   INIT / RESUME UPLOAD
-   creates upload if not exists,preallocates file,returns received chunks for resume
- */
+// INIT / RESUME UPLOAD
+// creates upload if not exists,preallocates file,returns received chunks for resume
+
 router.post("/init", async (req, res) => {
   try {
     const { filename, totalSize, totalChunks } = req.body;
@@ -63,10 +62,9 @@ router.post("/init", async (req, res) => {
   }
 });
 
-/* 
-   UPLOAD CHUNK
-   idempotent,random-access write
- */
+//  UPLOAD CHUNK
+//  idempotent,random-access write
+ 
 router.post("/chunk", upload.single("chunk"), async (req, res) => {
   try {
     const { uploadId, chunkIndex } = req.body;
@@ -105,10 +103,10 @@ router.post("/chunk", upload.single("chunk"), async (req, res) => {
   }
 });
 
-/* =========================================================
-   FINALIZE UPLOAD
-   calculates SHA-256 via streaming
-========================================================= */
+
+// FINALIZE UPLOAD
+// calculates SHA-256 via streaming
+
 router.post("/finalize/:uploadId", async (req, res) => {
   try {
     const { uploadId } = req.params;
