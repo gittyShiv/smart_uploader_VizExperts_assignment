@@ -1,15 +1,12 @@
-version: "3.9"
-
 services:
   backend:
     build: ./backend
     restart: unless-stopped
     env_file:
-      - ./backend/.env   #this has MONGO_URI=... (Atlas URI)
+      - ./backend/.env   #contains MONGO_URI and PORT
     environment:
       PORT: ${PORT:-5000}
-      MONGO_URI: ${MONGO_URI}
-    depends_on: []       #no local mongo; we are using Atlas
+    depends_on: []       #using Atlas; no local mongo
     ports:
       - "5000:5000"
 

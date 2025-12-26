@@ -13,30 +13,35 @@ const Upload = require("./models/Upload");
 
 const app = express();
 
-/* ==============================
-   CONNECT TO MONGODB ATLAS
-================================ */
+
+//  CONNECT TO MONGODB ATLAS
+
 connectDB();
 
-/* ==============================
-   MIDDLEWARE
-================================ */
+//middlewares
 app.use(express.json());
-app.use(cors({
-  origin: "http://localhost:5173"
-}));
+const allowedOrigins =
+  process.env.ALLOWED_ORIGINS?.split(",").map((o) => o.trim()) || [
+    "http://localhost:4173",
+    
+  ];
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
 
-/* ==============================
-   ROUTES
-================================ */
+
+//  ROUTES
+
 app.use("/upload", uploadRoutes);
 app.use("/upload", peekRoutes);
 
-/* ==============================
-   CLEANUP ORPHANED UPLOADS
-   - runs every 1 hour
-   - removes uploads stuck in UPLOADING
-================================ */
+
+ //  CLEANUP ORPHANED UPLOADS
+ // runs every 1 hour,removes uploads stuck in UPLOADING
+
 const TEMP_DIR = path.join(__dirname, "uploads/temp");
 
 setInterval(async () => {
@@ -66,11 +71,10 @@ setInterval(async () => {
   }
 }, 60 * 60 * 1000); // every hour
 
-/* ==============================
-   SERVER START
-================================ */
+
+ //  SERVER START
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

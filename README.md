@@ -8,7 +8,7 @@ A resumable, concurrent ZIP chunk uploader with a “Luminous” neon/glassmorph
 - Live speed (MB/s) and ETA
 - Neon “Luminous” grid with micro-animations
 - Circular analytics ring for progress/speed/ETA
-- MongoDB persistence (Atlas or local)
+- MongoDB persistence (Atlas)
 - Zip peek endpoint (top-level entries)
 
 ## Frontend
@@ -40,8 +40,13 @@ A resumable, concurrent ZIP chunk uploader with a “Luminous” neon/glassmorph
 
 > Without `MONGO_URI`, backend will fail to connect—by design to avoid leaking credentials.
 
+4. The "Peek" Requirement: to list the top-level filenames inside the ZIP without extracting the whole archive to disk. 
+```bash
+   http://localhost:5000/upload/peek/<upload_id>
+   ```
+
 ## Scripts (inside containers or locally)
-- Backend: `npm start` (adjust if your package.json differs)
+- Backend: `npm start`
 - Frontend dev: `npm run dev`
 - Frontend build: `npm run build`
 - Frontend preview (used in Dockerfile): `npm run preview -- --host --port 4173`
