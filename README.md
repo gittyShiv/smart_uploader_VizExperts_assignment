@@ -2,6 +2,32 @@
 
 A resumable, concurrent ZIP chunk uploader with a “Luminous” neon/glassmorphism UI, live chunk grid, speed/ETA analytics, and MongoDB persistence.
 
+## Quick Start (Docker, Atlas)
+1. Clone the Repository
+   ```bash
+   git clone https://github.com/gittyShiv/smart_uploader_VizExperts_assignment.git
+   ```
+   
+3. Create `backend/.env` (not committed, see .env.example):
+   ```env
+   MONGO_URI=mongodb+srv://<user>:<pass>@<cluster-host>/<db-name>?retryWrites=true&w=majority
+   PORT=5000
+   ```
+4. Build & run:
+   ```bash
+   cd smart_uploader_VizExperts_assignment
+   docker-compose up --build
+   ```
+5. Frontend: http://localhost:4173  
+   Backend API: http://localhost:5000
+
+> Without `MONGO_URI`, backend will fail to connect—by design to avoid leaking credentials.
+
+5. The "Peek" Requirement: to list the top-level filenames inside the ZIP without extracting the whole archive to disk. 
+```bash
+   http://localhost:5000/upload/peek/<upload_id>
+   ```
+
 ## Features
 - Chunked, concurrent uploads with retry
 - Resume support (server remembers received chunks)
@@ -24,30 +50,6 @@ A resumable, concurrent ZIP chunk uploader with a “Luminous” neon/glassmorph
   - `POST /upload/finalize/:uploadId`
   - `GET /peek/:uploadId`
 - Port: `5000`
-
-## Quick Start (Docker, Atlas)
-1. Clone the Repository
-   ```bash
-   git clone https://github.com/gittyShiv/smart_uploader_VizExperts_assignment.git
-   ```
-3. Create `backend/.env` (not committed, see .env.example):
-   ```env
-   MONGO_URI=mongodb+srv://<user>:<pass>@<cluster-host>/<db-name>?retryWrites=true&w=majority
-   PORT=5000
-   ```
-4. Build & run:
-   ```bash
-   docker-compose up --build
-   ```
-5. Frontend: http://localhost:4173  
-   Backend API: http://localhost:5000
-
-> Without `MONGO_URI`, backend will fail to connect—by design to avoid leaking credentials.
-
-5. The "Peek" Requirement: to list the top-level filenames inside the ZIP without extracting the whole archive to disk. 
-```bash
-   http://localhost:5000/upload/peek/<upload_id>
-   ```
 
 ## Scripts (inside containers or locally)
 - Backend: `npm start`
