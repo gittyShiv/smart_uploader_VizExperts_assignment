@@ -27,7 +27,7 @@ A resumable, concurrent ZIP chunk uploader with a “Luminous” neon/glassmorph
 ```bash
    http://localhost:5000/upload/peek/<upload_id>
    ```
-##Screenshots
+## Screenshots
 ![Internet stopped](screenshots/demo1.png)
 ![Complete upload](screenshots/demo2.png)
 
