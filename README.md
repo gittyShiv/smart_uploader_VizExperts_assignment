@@ -64,4 +64,55 @@ A resumable, concurrent ZIP chunk uploader with a “Luminous” neon/glassmorph
   - Error: red shake
   - Pending: subtle glass tile
 
+#                              Project Documentation
+
+1️.File Integrity Handling (Hashing)
+: When the large file is uploaded into chunks, it is crucial to ensure that the chunks are assembled to their correct position and there is no data corruption occurs due reordering, network failures or retries.
+
+Approach: I had implemented file integrity verification using SHA-256 hashing into the backend.
+
+Working: 
+Chunked upload phase:Using random-access offsets chunks are written on disk. Arrival order does not matter.
+
+Finalization phase: When all chunks are uploaded, the backend streams the assembled file from disk and calculates a SHA-256 hash using Node.js crypto. Then updates MongoDB with the final hash and marks as COMPLETED.
+
+Pros:
+Loading large files into memory is been avoided by streaming hashing.
+SHA-256 guarantees integrity verification.
+
+So we have File integrity is guaranteed, memory-efficient, and production-safe.
+
+2️.Pause / Resume Logic
+Design decision: As backend is already idempotent and chunk state is persisted in MongoDB so,
+Pause/Resume functionality is implemented entirely on the frontend, without requiring much backend changes. 
+
+How Pause works:
+The scheduler is stopped from dispatching new chunk uploads by a pause flag.
+The system allows in-flight chunk uploads to finish safely
+
+How Resume works:
+The system reactivates the scheduler, which resumes uploading the remaining chunks in the queue
+
+Refresh-based Resume: The upload identity is derived from a file signature (name + size). During a refresh, a handshake is performed by the frontend with the backend so that already received chunk indices can be fetched and only missing chunks are resumed
+
+3️.Known Trade-offs
+Concurrency is managed on the frontend (max 3). The backend is kept simpler and stateless, but the frontend is relied upon to be "well-behaved."
+
+Memory-based chunk handling: multer.memoryStorage() receives chunks in memory. While this setup suits this scope, disk-streaming would improve high-traffic production.
+
+No per-chunk hash verification: Integrity is validated at the full file level. The design is simplified by this approach while strong final guarantees are maintained.
+
+4️. Further Enhancements
+Chunk-level hashing: Faster detection can be enabled using the chunk level hashing for fater denial of corrupted file upload
+
+Background finalization jobs: Hash computation and ZIP inspection can be done by background workers also
+
+Authentication: We can implement authentication so specific user account can upload
+
+
+-streaming I/O
+-idempotent chunk handling
+-retry safety
+-strong file integrity guarantees
+
 
