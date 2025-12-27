@@ -64,7 +64,7 @@ setInterval(async () => {
     }
 
     if (staleUploads.length > 0) {
-      console.log(`🧹 Cleaned ${staleUploads.length} orphaned uploads`);
+      console.log(`Cleaned ${staleUploads.length} orphaned uploads`);
     }
   } catch (err) {
     console.error("Cleanup job failed:", err.message);
